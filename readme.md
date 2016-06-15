@@ -16,6 +16,30 @@ Before this lessons you should be able to...
 * Compare and contrast sessions & cookies
 * Build an MVC Rails application
 
+## Authentication vs. Authorization
+
+* **Authentication** verifies that a user is who they say they are. When a user logs into our site, we *authenticate* them by checking that the password they typed in matches the password we have stored for them.
+* **Authorization** is the process of determining whether or not a user has *permission* to to perform certain actions on our site. For example, a user may *be authorized* to view their profile page and edit their own blog posts, but not to edit another user's blog posts.
+
+A user must always first be authenticated, then it can be determined what they are authorized to do.
+
+Example: when Sarah enters a bar, a bouncer looks at her photo ID to ensure (authenticate) that she is who she claims. Sarah is thirty years old so she is allowed (authorized) to drink.
+
+
+##Password hashing
+
+In order to authenticate a user, we need to store their password in our database. This allows us to check that the user typed in the correct password when logging into our site.
+
+The downside is that if anyone ever got access to our database, they would also have access to all of our users' login information. We use a [**hashing algorithm**](https://crackstation.net/hashing-security.htm#normalhashing) to avoid storing plain-text passwords in the database. We also use [**salt**](https://crackstation.net/hashing-security.htm#salt) to randomize the hashing algorithm, providing extra security against potential attacks. The plain-text password that has been hashed can be referred to as the **password digest**.
+
+Think of a digested password as a firework. It is very easy to explode a firework (*hash plaintext into a digest*), but next to impossible to reverse that process (*turn the digest back into plaintext*). If I wanted to see if two sets of fireworks are the same (*a user is logging in, aka has provided their password and wishes to be authenticated*) we have to explode the fireworks again to compare it with the original explosion (*take the provided plaintext password, hash it again using the same algorithm, and match it with the saved password digest*).
+
+![fireworks](http://i.giphy.com/122XXtx3oumxBm.gif)
+
+##Bcrypt
+
+<!--TODO: Add bcrypt example-->
+
 ## App Setup
 
 Let's start a new Rails application:
