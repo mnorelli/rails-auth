@@ -44,10 +44,6 @@ Think of a digested password as a firework. It is very easy to explode a firewor
 
 ![fireworks](http://i.giphy.com/122XXtx3oumxBm.gif)
 
-##Bcrypt
-
-<!--TODO: Add bcrypt example-->
-
 ## App Setup
 
 Let's start a new Rails application:
@@ -57,13 +53,7 @@ Let's start a new Rails application:
 * `rake db:create`
 * `subl .`
 
-## Authentication Review
-
-**Authentication** is the verification of a user's credentials to prove "they are who they say they are". This is fundamentally different than **authorization**, refers to the set of permissions granted to a particular user in the application.
-
-To authenticate our users we typically ask them for a `password` we can associate with their `email` or `username`. A password is a *very* private piece of information that must be kept secret, and so, we strategically obscure it in such a way that may never be reverse-engineered by *anyone* and remains the key to **confirm the user is authentic** (authentication).
-
-Our library of choice for password hashing is `BCrypt`, which we will add to our gemfile. In Rails, the convention is to add all our business logic into the models, so we will be writing most of our code in the `User` model.
+The library of choice for password hashing is `BCrypt`, which we will add to our gemfile. In Rails, the convention is to add all our business logic into the models, so we will be writing most of our code in the `User` model.
 
 Remember, remember: **never store plaintext passwords**, only the digested versions. 
 
@@ -72,8 +62,8 @@ Let's uncomment `bcrypt` at the bottom of our `Gemfile` as we will need it to di
 `Gemfile`
 
 ```ruby
-	# Use ActiveModel has_secure_password
-	gem 'bcrypt', '~> 3.1.7'
+# Use ActiveModel has_secure_password
+gem 'bcrypt', '~> 3.1.7'
 ```
 
 Then run `bundle` to install `bcrypt` and the other gems.
@@ -84,21 +74,21 @@ As soon as something is installed via bundler we can access it via our `rails co
 
 
 ```bash
-	Loading development environment (Rails 4.1.6)
- ## Let's create our first password & save the hashed output to a variable
-	2.1.0 :001 > hashed_pass = BCrypt::Password.create("swordfish")
-	 => "$2a$10$6MQQCxBpfu16koDVs3zkbeSXn1z4fqKx9xLp4.UOBQBDkgFaukWM2"
+Loading development environment (Rails 4.1.6)
+## Let's create our first password & save the hashed output to a variable
+2.1.0 :001 > hashed_pass = BCrypt::Password.create("swordfish")
+=> "$2a$10$6MQQCxBpfu16koDVs3zkbeSXn1z4fqKx9xLp4.UOBQBDkgFaukWM2"
 
- ## Let's compare our password to another
- 	2.1.0 :003 > BCrypt::Password.new(hashed_pass) == "tunafish"
- 	=> false
+## Let's compare our password to another
+2.1.0 :003 > BCrypt::Password.new(hashed_pass) == "tunafish"
+=> false
  	
- ## Let's compare our password to original
- 	2.1.0 :004 > BCrypt::Password.new(hashed_pass) == "swordfish"
- 	=> true
+## Let's compare our password to original
+2.1.0 :004 > BCrypt::Password.new(hashed_pass) == "swordfish"
+=> true
  	
- ## Exit
- 	2.1.0 :005 > exit
+## Exit
+2.1.0 :005 > exit
 ```
 
 > Note: the `==` method for `BCrypt::Password` is different than the typical comparator in Ruby say for an `Object`.
