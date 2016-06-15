@@ -1,22 +1,30 @@
+![](https://ga-dash.s3.amazonaws.com/production/assets/logo-9f88ae6c9c3871690e33280fcf557f33.png)
+
 #Auth in Rails
 
-##Learning Objectives
+### Why is this important?
+<!-- framing the "why" in big-picture/real world examples -->
+*This workshop is important because:*
 
-By the end of this lesson...
+Authenticating users is key to authorizing who is allows to do what in an application. If we have an application in which users can create their own content that only they have access to, we need to learn about "auth".
+
+### What are the objectives?
+<!-- specific/measurable goal for students to achieve -->
+*After this workshop, developers will be able to:*
 
 * Implement an authentication system in Rails that securely stores users' passwords
 * Spec the User model using TDD 
 * Build routes, controllers, and views necessary for a user to signup & login
 
-##Prerequisites
-
-Before this lessons you should be able to...
+### Where should we be now?
+<!-- call out the skills that are prerequisites -->
+*Before this workshop, developers should already be able to:*
 
 * Illustrate the request/response cycle
 * Compare and contrast sessions & cookies
 * Build an MVC Rails application
 
-## Authentication vs. Authorization
+## Authentication / Authorization
 
 * **Authentication** verifies that a user is who they say they are. When a user logs into our site, we *authenticate* them by checking that the password they typed in matches the password we have stored for them.
 * **Authorization** is the process of determining whether or not a user has *permission* to to perform certain actions on our site. For example, a user may *be authorized* to view their profile page and edit their own blog posts, but not to edit another user's blog posts.
