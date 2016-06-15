@@ -6,7 +6,7 @@ describe User, type: :model do
   end
 
   context 'Initialization' do
-    let(:user) { User.new }
+    subject(:user) { User.new }
 
     it "allows the getting of a password" do
       expect(user).to respond_to(:password)
@@ -31,7 +31,7 @@ describe User, type: :model do
   end
 
   context 'Validation' do
-    let(:user) do
+    subject(:user) do
       #create a user in active memory
       User.new({
         email: "bana@na.com",

@@ -4,7 +4,7 @@ class User < ActiveRecord::Base
   has_secure_password
 
   # ensure emails are unique
-  validates :email, uniqueness: true 
+  validates :email, presence:true, uniqueness: true 
 
   # BCrypt::Engine.cost = 12
 
