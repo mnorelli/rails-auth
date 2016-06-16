@@ -73,7 +73,6 @@ Then run `bundle` to install `bcrypt` and the other gems.
 
 As soon as something is installed via bundler we can access it via our `rails console.` Let's play in console.
 
-
 ```bash
 Loading development environment (Rails 4.1.6)
 ## Let's create our first password & save the hashed output to a variable
@@ -99,9 +98,9 @@ BCrypt::Password.instance_method(:==) == Array.instance_method(:==)
 => false
 ```
 
+How will Bcypts `==` help us **authenticate** a `User`?
 
->How will Bcypts `==` help us **authenticate** a `User`?
-
+[BCrypt](https://en.wikipedia.org/wiki/Bcrypt) uses ["salt"](https://en.wikipedia.org/wiki/Salt_(cryptography)) to protect against [rainbow table](https://en.wikipedia.org/wiki/Rainbow_table) attacks and is an [adaptive function](https://codiscope.com/cryptographic-hash-functions/) (see section: "Adaptive Hash Functions") to protect against [brute-force](https://en.wikipedia.org/wiki/Brute-force_search) attacks.
 
 ## Test Setup
 
