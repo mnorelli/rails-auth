@@ -6,14 +6,13 @@
 <!-- framing the "why" in big-picture/real world examples -->
 *This workshop is important because:*
 
-Authenticating users is key to authorizing who is allows to do what in an application. If we have an application in which users can create their own content that only they have access to, we need to learn about "auth".
+Authenticating users is key to authorizing who is allows to do what in an application. We need to impliment these concepts in order to create and experience where users can have differentiated experiences on the application. For example, when we go to Feedly, we'd like to see new stories customized for each of our profiles, and when others go to gmail, we'd like them prevented from accessing our emails. 
 
 ### What are the objectives?
 <!-- specific/measurable goal for students to achieve -->
 *After this workshop, developers will be able to:*
 
 * Implement an authentication system in Rails that securely stores users' passwords
-* Spec the User model using TDD 
 * Build routes, controllers, and views necessary for a user to signup & login
 
 ### Where should we be now?
@@ -31,10 +30,12 @@ Authenticating users is key to authorizing who is allows to do what in an applic
 
 A user must always first be authenticated, then it can be determined what they are authorized to do.
 
-Example: when Sarah enters a bar, a bouncer looks at her photo ID to ensure (authenticate) that she is who she claims. Sarah is thirty years old so she is allowed (authorized) to drink.
+>Example: When Sarah enters a bar, a bouncer looks at her photo ID to ensure (authenticate) that she is who she claims. Sarah is thirty years old so she is allowed (authorized) to drink.
 
 
-##Password hashing
+##Password Hashing
+
+You've already seen [how not to store a password](https://www.youtube.com/watch?v=8ZtInClXe1Q).
 
 In order to authenticate a user, we need to store their password in our database. This allows us to check that the user typed in the correct password when logging into our site.
 
@@ -99,7 +100,7 @@ BCrypt::Password.instance_method(:==) == Array.instance_method(:==)
 ```
 
 
-Hopefully this helps you begin to think about how to setup an **authenticate** method for the `User`.
+>How will Bcypts `==` help us **authenticate** a `User`?
 
 
 ## Test Setup
@@ -122,21 +123,19 @@ group :development, :test do
 end
 ```
 
-* `bundle` and then run the command `rails g rspec:install` to initialize rspec as your testing suite.
-	* Now a `spec` directory has been created for you
+`bundle` and then run the command `rails g rspec:install` to initialize rspec as your testing suite. Now a `spec` directory has been created. Additionally, rspec will automatically generate tests for any files created by the `rails generate` command.
 
 ## Model Setup
 
-Let's leave our controllers be for the time being and setup our models. Our tests depend on a `User` model existing.
-NOTE: The default attribute type is string, if we don't specify.
+Let's leave our controllers be for the time being and setup our models. Our tests depend on a `User` model existing. The default attribute type is string, if we don't specify.
 
 ```bash
-rails g model user email:string password_digest:string
+rails g model user email password_digest
 ```
 
 `email` is the natural username for our user, and the `password_digest` is where we'll store the user's hashed password.
 
->Note: if you ever make a mistake during a generation, you can reverse it with `rails destroy <resourceType> <resourceName>`. In this case it would simply be `rails d model user`.
+>If you ever make a mistake during a generation, you can reverse it with `rails destroy <resourceType> <resourceName>`. In this case it would simply be `rails d model user`.
 
 Great, let's run the migrations!
 
@@ -146,7 +145,7 @@ rake db:migrate
 
 Now we can ensure we build our `User` model to specifications by passing some tests we've been given!
 
-* Inside the directory `spec` overwrite the existing file `/models/user_spec.rb` with the below tests.
+Inside the directory `spec` overwrite the existing file `/models/user_spec.rb` with the below tests.
 
 ```ruby
 require "rails_helper"
@@ -158,7 +157,7 @@ describe User, type: :model do
   end
 
   context 'Initialization' do
-    let(:user) { User.new }
+    subject(:user) { User.new }
 
     it "allows the getting of a password" do
       expect(user).to respond_to(:password)
@@ -183,7 +182,7 @@ describe User, type: :model do
   end
 
   context 'Validation' do
-    let(:user) do
+    subject(:user) do
       #create a user in active memory
       User.new({
         email: "bana@na.com",
@@ -316,7 +315,7 @@ A user should be able to...
 
 * see a `form_for` on `users#new` that displays email, password, and password_confirmation data.
 
-* POST the form on `users#new` to `users#create` which creates a new user, logs them in, and redirects to `user#show`.
+* submit the form on `users#new` to `users#create` which creates a new user, logs them in, and redirects to `user#show`.
 
 * go to `/users/:id/` and see their profile page.
 
@@ -397,7 +396,7 @@ end
 ####Step 3
 
 * Create the user in `users#create` and when done have it redirect to `user#show` (later we will have them also be logged-in in this step)
-	* Bonus: create a condition that checks if the user was saved correctly. Hint: first build the user in memory with `.new` then check `if @user.save` proceed as normal `else` render the signup page again.
+	* Tip: create a condition that checks if the user was saved correctly. Hint: first build the user in memory with `.new` then check `if @user.save` proceed as normal `else` render the signup page again.
 
 ####Step 4
 
@@ -458,18 +457,27 @@ class ApplicationController < ActionController::Base
 end
 ```
 
-The above method defines `@current_user` if it is not already defined. The way the `&&` operator works is that it will keep evaluating if `session[:user_id]` is defined and then set `@current_user` to whatever the last item evaluated is; in this case it would be `User.find_by_id(session[:user_id])`, so the user itself.
+>Who can explain how the `current_user` method works?
+
+The above method defines `@current_user` if it is not already defined. The way the `&&` operator works is that it will keep evaluating if `session[:user_id]` is defined and then set `@current_user` to whatever the *last item* evaluated is; in this case it would be `User.find_by_id(session[:user_id])`, so the user itself.
+
+>Prefer `find_by_id(<id>)` instead of `find(<id>)`, as it does not rails an exception, but instead returns `nil` if the id is invalid.
 
 The method `current_user` in is very useful for:
 
 * **Conditional views** based on the `current_user`'s state
 	* I.e. is a login or logout button displayed in the nav_bar?
-* **Authorization** to view resources
-	* I.e. test if `current_user` is the user who's resources are being CRUDed.
+* **Authorization** to CRUD resources
+	* I.e. determine if `current_user` is accessing their own or another's information.
 
 <h3 id="logout">Logout</h3>
 
-In the `session#destroy` controller action set the `session[:user_id]` to `nil` and redirect to your `root_path`
+In `session#destroy`, delete the key `:user_id`, clear the `@current_user`, and redirect to your `root_path`.
+
+```ruby
+session.delete(:user_id)
+@current_user = nil
+```
 
 ## More Notes
 
@@ -493,11 +501,14 @@ class ApplicationController < ActionController::Base
  
   def require_login
     if !current_user
-      redirect_to root_path #halt's request cycle
+      #send an http response to stop program execution
+      redirect_to root_path
     end
   end
 end
 ```
+
+>Note: One could also use `unless` in lieu of `if !`
 
 Now use a `before_action` to run the `require_login` method before any actions the `PostController` will perform.
 
@@ -511,7 +522,7 @@ class PostController < ApplicationController
 end
 ```
 
-Checkout the `only` & `except` [options](http://guides.rubyonrails.org/action_controller_overview.html#highlighter_858492) for more versatility.
+Further define which actions this hook is applied to with the `only` & `except` [options](http://guides.rubyonrails.org/action_controller_overview.html#highlighter_858492).
 
 <h3 id="flash_msgs">Bonus: Adding Flash Messages</h3>
 
@@ -541,7 +552,7 @@ class SessionsController < ApplicationController
 end
 ```
 
-Install the [twitter-bootstrap-rails](https://github.com/seyhunak/twitter-bootstrap-rails) gem and require it by running `rails generate bootstrap:install static`
+The [twitter-bootstrap-rails](https://github.com/seyhunak/twitter-bootstrap-rails) gem has a `bootstrap_flash` that adds some nice styling to the flash messages. Require the library in project with `rails generate bootstrap:install static`
 
 We can then render these message and style them with a class that matches their name on all pages.
 
@@ -596,3 +607,15 @@ class UsersController < ApplicationController
   end
 end
 ```
+
+##Closing Thoughts
+
+* What is the difference between authorization and authentication?
+* How should we not store passwords?
+* Why is BCrypt useful and how do we use it to authenticate a user
+* What does it mean for a user to be "logged in"?
+
+##Additional Resources
+
+* [Rails Tutorial: login & logout](https://www.railstutorial.org/book/log_in_log_out)
+* [Devise](https://github.com/plataformatec/devise)
