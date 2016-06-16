@@ -618,3 +618,4 @@ end
 
 * [Rails Tutorial: login & logout](https://www.railstutorial.org/book/log_in_log_out)
 * [Devise](https://github.com/plataformatec/devise)
+* [How public-key cryptosystems work](https://www.youtube.com/watch?v=3QnD2c4Xovk)
